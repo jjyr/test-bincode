@@ -1,10 +1,11 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-#[serde(tag = "type")]
-enum Dep {
-    CellDep(CellDep),
-    TypeId(TypeId),
+struct Dep {
+    #[serde(default)]
+    cell_dep: Option<CellDep>,
+    #[serde(default)]
+    type_id: Option<TypeId>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -23,7 +24,10 @@ fn main() {
         out_point: "out_point1".to_string(),
         dep_type: "type".to_string(),
     };
-    let dep = Dep::CellDep(cell_dep);
+    let dep = Dep {
+        cell_dep: Some(cell_dep),
+        type_id: None,
+    };
     let r = bincode::serialize(&dep).unwrap();
     println!("{:#?}", r);
     let dep2: Dep = bincode::deserialize(&r).unwrap();
